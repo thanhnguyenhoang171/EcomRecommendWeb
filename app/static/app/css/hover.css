@@ -1,0 +1,35 @@
+/* Ẩn danh sách subcategories khi không hover */
+ul.drop-menu {
+    display: none;
+    position: absolute;
+    background-color: white;
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+   
+    border: 1px solid #ddd;
+}
+ul.pos {
+    left: 159px;
+    bottom: -53px;
+}
+
+/* Hiển thị danh sách subcategories khi hover vào category */
+li:hover > ul.drop-menu {
+    display: block;
+}
+
+/* Định dạng subcategory item */
+ul.drop-menu li {
+    padding: 10px;
+}
+
+ul.drop-menu li a {
+    text-decoration: none;
+    color: black;
+    display: block;
+}
+
+ul.drop-menu li a:hover {
+    background-color: #f0f0f0;
+}

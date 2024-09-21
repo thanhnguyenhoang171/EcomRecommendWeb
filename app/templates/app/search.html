@@ -1,0 +1,45 @@
+{% extends "app/base.html" %}  {% load humanize %}  {%load static%}
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <title></title>
+        <meta name="description" content="" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="stylesheet" href="" />
+    </head>
+    <body>
+        {% block register %}
+        <h5>Kết quả tìm kiếm cho {{ searched }}</h5>
+
+        <div class="row" style = "width:97.5%;">
+            {%for product in keys%}
+            <div class="col-lg-3" >
+                <img style="height:280px" class="thumbnail" src="{{product.ImageURL}}" />
+                <div class="box-element product">
+                    <div style="height:50px">
+                    <h6><strong>{{product.name}}</strong></h6>
+                    </div>
+                    <hr />
+                    <h4 style="display: inline-block; float: center">
+                        <strong>{{product.price | floatformat:0 | intcomma}} VNĐ</strong>
+                    </h4>
+                    <br />
+                    <button
+                        data-product="{{product.id}}"
+                        data-action="add"
+                        class="btn btn-outline-secondary add-btn update-cart"
+                    >
+                        Thêm vào giỏ hàng
+                    </button>
+                    <a class="btn btn-outline-success" href="#">Xem</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+     {% endblock register %}
+    </body>
+</html>

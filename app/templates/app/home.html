@@ -1,4 +1,4 @@
-{% extends "app/base.html" %} {%load static%} {%block banner-slider%}
+{% extends "app/base.html" %} {% load humanize %}  {%load static%} {%block banner-slider%}
 <div
     id="carouselExampleDark"
     class="carousel carousel-dark slide"
@@ -35,69 +35,73 @@
     <div class="carousel-inner">
         <div class="carousel-item active" data-bs-interval="5000">
             <img
-                src="{% static 'app/images/banner/b1.jpg'%}"
+                src="{% static 'app/images/banner/samsung_new_2024.webp'%}"
                 class="d-block w-100"
                 alt="..."
                 height="420"
             />
 
             <div
-                class="carousel-caption d-none d-md-block bg-success text-white"
+                class="carousel-caption d-none d-md-block text-white"
+                style="background-color: rgba(0, 0, 255, 0.5);"
             >
-                <h5>First slide label</h5>
+                <h5>Samsung Galaxy Z Fold 5</h5>
                 <p>
-                    Some representative placeholder content for the first slide.
+                    Bước nhảy vọt về công nghệ điện thoại gập, mang lại trải nghiệm độc đáo và vượt trội cho người dùng.
                 </p>
             </div>
         </div>
         <div class="carousel-item" data-bs-interval="5000">
             <img
-                src="{% static 'app/images/banner/b2.jpg'%}"
+                src="{% static 'app/images/banner/iphone16.jpg'%}"
                 class="d-block w-100"
                 alt="..."
                 height="420"
             />
-            <div
-                class="carousel-caption d-none d-md-block bg-success text-white"
+            {% comment %} <div
+                class="carousel-caption d-none d-md-block  text-white"
+                style="background-color: rgba(0, 0, 255, 0.5);"
             >
                 <h5>Second slide label</h5>
                 <p>
                     Some representative placeholder content for the second
                     slide.
                 </p>
-            </div>
+            </div> {% endcomment %}
         </div>
         <div class="carousel-item" data-bs-interval="5000">
             <img
-                src="{% static 'app/images/banner/b3.jpg'%}"
+                src="{% static 'app/images/banner/samsung-may-tinh-bang.webp'%}"
                 class="d-block w-100"
                 alt="..."
                 height="420"
             />
-            <div
-                class="carousel-caption d-none d-md-block bg-success text-white"
+            {% comment %} <div
+                class="carousel-caption d-none d-md-block  text-white"
+                style="background-color: rgba(0, 0, 255, 0.5);"
             >
                 <h5>Third slide label</h5>
                 <p>
                     Some representative placeholder content for the third slide.
                 </p>
-            </div>
+            </div> {% endcomment %}
         </div>
         <div class="carousel-item" data-bs-interval="5000">
             <img
-                src="{% static 'app/images/banner/b4.jpg'%}"
+                src="{% static 'app/images/banner/dienthoai-thong-minh-sis-samsung-desktop.webp'%}"
                 class="d-block w-100"
                 alt="..."
                 height="420"
             />
-            <div
-                class="carousel-caption d-none d-md-block bg-success text-white"
+            {% comment %} <div
+                class="carousel-caption d-none d-md-block  text-white"
+                style="background-color: rgba(0, 0, 255, 0.5);"
             >
                 <h5>Third slide label</h5>
                 <p>
                     Some representative placeholder content for the third slide.
                 </p>
-            </div>
+            </div> {% endcomment %}
         </div>
     </div>
     <button
@@ -106,7 +110,7 @@
         data-bs-target="#carouselExampleDark"
         data-bs-slide="prev"
     >
-        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="carousel-control-prev-icon"  aria-hidden="true"></span>
         <span class="visually-hidden">Previous</span>
     </button>
     <button
@@ -127,12 +131,14 @@
  <div class="row" style = "width:100%">
     {%for product in products%}
         <div class="col-lg-3">
-            <img class="thumbnail" src="{{product.ImageURL}}" />
-            <div class="box-element product">
+            <img style = "height:280px; width:100%"  class="thumbnail" src="{{product.ImageURL}}" />
+            <div  class="box-element product">
+                <div style="height:50px;">
                 <h6><strong>{{product.name}}</strong></h6>
+                </div>
                 <hr>
                 <h4 style="display: inline-block; float: center">
-                    <strong>{{product.price | floatformat:0}} VNĐ</strong>
+                    <strong>{{product.price | floatformat:0 | intcomma}} VNĐ</strong>
                 </h4>
                 <br>
                 <button data-product={{product.id}} data-action = "add"class="btn btn-outline-secondary add-btn update-cart">
