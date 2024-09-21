@@ -1,5 +1,6 @@
 {% extends 'app/base.html' %}
 {% load static %}
+{% load humanize %}
 {% block content-checkout %}
      <div class="row" style = 'width:100%'>
 		<div class="col-lg-6">
@@ -57,12 +58,12 @@
 				<div class="cart-row">
 					<div style="flex:2"><img class="row-image" src="{{item.product.ImageURL}}"></div>
 					<div style="flex:2"><p>{{item.product.name}}</p></div>
-					<div style="flex:1"><p>{{item.product.price}}</p></div>
+					<div style="flex:1"><p>{{item.product.price|floatformat:0|intcomma}} VNĐ</p></div>
 					<div style="flex:1"><p>x{{item.quantity}}</p></div>
 				</div>
 				{% endfor %}
-				<h5>Items:   {{order.get_cart_items}}</h5>
-				<h5>Total:   {{order.get_cart_total}} VNĐ</h5>
+				<h5>Số lượng:   {{order.get_cart_items}}</h5>
+				<h5>Tổng giá:   {{order.get_cart_total|floatformat:0|intcomma}} VNĐ</h5>
 			</div>
 		</div>
 	</div>
