@@ -28,3 +28,6 @@
      <img style="width:100%; height:100%;" src="https://raw.githubusercontent.com/thanhnguyenhoang171/EcomRecommendWeb/main/DemoPics/detail_3.png" alt="Detail Image" style="width:300px;">
     <figcaption>Hình 2. Đánh giá sản phẩm</figcaption>
 </figure>
+<h3>Evalute</h3>
+<p>Dự án đang ở giai đoạn hoàn thiện cơ bản, nên hệ số Sai số chuẩn (Standard Error - SE) và Sai số căn bậc hai của trung bình (Root Mean Square Error - RMSE) ở mức cao."</p>
+<img src = "https://github.com/thanhnguyenhoang171/EcomRecommendWeb/blob/main/DemoPics/evaluate.png"/>
