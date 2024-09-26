@@ -23,6 +23,6 @@
 <h3>Hệ thống gợi ý sản phẩm (Collaborative Filtering)</h3>
 <p>Trong trang chi tiết sản phẩm, người dùng (User) sẽ được hệ thống gợi ý sản phẩm dựa trên mô hình lọc công </p>
 <figure>
-    <img src="https://raw.githubusercontent.com/thanhnguyenhoang171/EcomRecommendWeb/main/DemoPics/detail_2.png" alt="Detail Image" style="width:300px;">
+    <img style="width:100%; height:100%;" src="https://raw.githubusercontent.com/thanhnguyenhoang171/EcomRecommendWeb/main/DemoPics/detail_2.png" alt="Detail Image" style="width:300px;">
     <figcaption>Hệ thống gợi ý sản phẩm cho người dùng</figcaption>
 </figure>
