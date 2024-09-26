@@ -21,8 +21,10 @@
       <li>  <p>Trang liên hệ</p> <br> <img src = "https://github.com/thanhnguyenhoang171/EcomRecommendWeb/blob/main/DemoPics/contact.png"/></li>
 </ol>
 <h3>Hệ thống gợi ý sản phẩm (Collaborative Filtering)</h3>
-<p>Trong trang chi tiết sản phẩm, người dùng (User) sẽ được hệ thống gợi ý sản phẩm dựa trên mô hình lọc công </p>
+<p>Trong trang chi tiết sản phẩm, người dùng (User) sẽ được hệ thống gợi ý sản phẩm (Product) dựa trên mô hình lọc công như _Hình 1_ dựa trên những đánh giá (Rating) từ những người dùng khác _Hình 2_ có sự tương quan</p>
 <figure>
     <img style="width:100%; height:100%;" src="https://raw.githubusercontent.com/thanhnguyenhoang171/EcomRecommendWeb/main/DemoPics/detail_2.png" alt="Detail Image" style="width:300px;">
-    <figcaption>Hệ thống gợi ý sản phẩm cho người dùng</figcaption>
+    <figcaption>Hình 1. Hệ thống gợi ý sản phẩm cho người dùng</figcaption>
+     <img style="width:100%; height:100%;" src="https://raw.githubusercontent.com/thanhnguyenhoang171/EcomRecommendWeb/main/DemoPics/detail_3.png" alt="Detail Image" style="width:300px;">
+    <figcaption>Hình 2. Đánh giá sản phẩm</figcaption>
 </figure>
