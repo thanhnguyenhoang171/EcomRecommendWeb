@@ -11,23 +11,29 @@ from .recommendation import CFRecommender
 from django.db.models import Avg
 from .evaluate import Evaluator
 
+
 # Create your views here.
 def home(request):
     if request.user.is_authenticated:
         customer = request.user
-        order, created = Order.objects.get_or_create(customer=customer, complete=False)
-        items = order.orderitem_set.all()
-        cartItems = order.get_cart_items
+        order = Order.objects.filter(
+            customer=customer, complete=False
+        ).first()  # Lấy order nếu đã tồn tại
+        if order:
+            items = order.orderitem_set.all()
+            cartItems = order.get_cart_items
+        else:
+            items = []
+            cartItems = 0
     else:
         items = []
-        order = {"get_cart_items": 0, "get_cart_total": 0}
-        cartItems = order["get_cart_items"]
+        cartItems = 0
 
     products = Product.objects.all()
     categories = Category.objects.filter(is_sub=False)
 
     # Pagination
-    paginator = Paginator(products, 20)  # Show 20 products per page
+    paginator = Paginator(products, 20)  # Hiển thị 20 sản phẩm mỗi trang
     page_number = request.GET.get("page")
     page_obj = paginator.get_page(page_number)
 
@@ -37,27 +43,6 @@ def home(request):
         "categories": categories,
     }
     return render(request, "app/home.html", context)
-
-
-# def cart(request):
-#     if request.user.is_authenticated:
-#         customer = request.user
-#         order, created = Order.objects.get_or_create(customer=customer, complete=False)
-#         items = order.orderitem_set.all()
-#         cartItems = order.get_cart_items
-#     else:
-#         items = []
-#         order = {"get_cart_items": 0, "get_cart_total": 0}
-#         cartItems = order["get_cart_items"]
-#     categories = Category.objects.filter(is_sub=False)
-
-#     context = {
-#         "items": items,
-#         "order": order,
-#         "cartItems": cartItems,
-#         "categories": categories,
-#     }
-#     return render(request, "app/cart.html", context)
 
 
 def cart(request):
