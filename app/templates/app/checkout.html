@@ -1,70 +1,79 @@
 {% extends 'app/base.html' %}
 {% load static %}
 {% load humanize %}
+
 {% block content-checkout %}
-     <div class="row" style = 'width:100%'>
-		<div class="col-lg-6">
-			<div class="box-element" id="form-wrapper">
-				<form id="form">
-					<div id="user-info">
-						<div class="form-field">
-							<input required class="form-control" type="text" name="name" placeholder="Name..">
-						</div>
-						<div class="form-field">
-							<input required class="form-control" type="email" name="email" placeholder="Email..">
-						</div>
-					</div>
-					
-					<div id="shipping-info">
-						<hr>
-						<p>Shipping Information:</p>
-						<hr>
-						<div class="form-field">
-							<input class="form-control" type="text" name="address" placeholder="Address..">
-						</div>
-						<div class="form-field">
-							<input class="form-control" type="text" name="city" placeholder="City..">
-						</div>
-						<div class="form-field">
-							<input class="form-control" type="text" name="state" placeholder="State..">
-						</div>
-						<div class="form-field">
-							<input class="form-control" type="text" name="zipcode" placeholder="Zip code..">
-						</div>
-						<div class="form-field">
-							<input class="form-control" type="text" name="country" placeholder="Zip code..">
-						</div>
-					</div>
+<div class="row" style='width:100%'>
 
-					<hr>
-					<input id="form-button" class="btn btn-success btn-block" type="submit" value="Continue">
-				</form>
-			</div>
+    <div class="col-lg-9 ">
+        <div class="box-element ">
+            <a class="btn btn-outline-dark" href="{% url 'cart' %}">&#x2190; Quay lại giỏ hàng</a>
+            <hr>
+            <h3>Tóm tắt đơn hàng</h3>
+            <hr>
 
-			<br>
-			<div class="box-element hidden" id="payment-info">
-				<small>Paypal Options</small>
-			</div>
+
+            {% for item in items %}
+            <div class="cart-row">
+                <div style="flex:2">
+                    <img class="row-image" src="{{ item.product.ImageURL }}">
+                </div>
+                <div style="flex:2">
+                    <p>{{ item.product.name }}</p>
+                </div>
+                <div style="flex:1">
+                    <p>{{ item.product.price|floatformat:0|intcomma }} VNĐ</p>
+                </div>
+                <div style="flex:1">
+                    <p>x{{ item.quantity }}</p>
+                </div>
+            </div>
+            {% endfor %}
+            <hr>
+            <h5>Số lượng: {{ order.get_cart_items }}</h5>
+            <h5>Tổng giá: {{ order.get_cart_total|floatformat:0|intcomma }} VNĐ</h5>
+            <hr>
+            <!-- Nút thanh toán -->
+			 
+            <div class="text-center">
+                <form action="{% url 'process_payment' %}" method="POST">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-primary">Thanh toán</button>
+                </form>
+            </div>
 			
-		</div>
+            <!-- Hiển thị thông báo -->
+            {% if messages %}
+                <div class="alert alert-info">
+                    {% for message in messages %}
+					 {% if message.tags == 'success' or message.tags == 'error' %}
+                        <p>{{ message }}</p>
+						 {% endif %}
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
 
-		<div class="col-lg-6">
-			<div class="box-element">
-				<a  class="btn btn-outline-dark" href="{% url 'cart' %}">&#x2190; Back to Cart</a>
-				<hr>
-				<h3>Order Summary</h3>
-				<hr>
-				{%for item in items%}
-				<div class="cart-row">
-					<div style="flex:2"><img class="row-image" src="{{item.product.ImageURL}}"></div>
-					<div style="flex:2"><p>{{item.product.name}}</p></div>
-					<div style="flex:1"><p>{{item.product.price|floatformat:0|intcomma}} VNĐ</p></div>
-					<div style="flex:1"><p>x{{item.quantity}}</p></div>
-				</div>
-				{% endfor %}
-				<h5>Số lượng:   {{order.get_cart_items}}</h5>
-				<h5>Tổng giá:   {{order.get_cart_total|floatformat:0|intcomma}} VNĐ</h5>
-			</div>
-		</div>
-	</div>
+    <div class="col-lg-3">
+        <div class="box-element">
+            <h3>Địa chỉ giao hàng</h3>
+            {% if shipping_infos %}
+                {% for info in shipping_infos %}
+                    <p><strong>Địa chỉ:</strong> {{ info.address }}</p>
+                    <p><strong>Thành phố:</strong> {{ info.city }}</p>
+                    <p><strong>Quận/Huyện:</strong> {{ info.state }}</p>
+                    <p><strong>Điện thoại:</strong> {{ info.phonenum }}</p>
+                    <hr>
+                {% endfor %}
+            {% else %}
+                <p>Chưa có thông tin giao hàng. Vui lòng cập nhật địa chỉ giao hàng.</p>
+            {% endif %}
+        </div>
+    </div>
+
+</div>
+<br>
+<br>
+<br>
 {% endblock content-checkout %}

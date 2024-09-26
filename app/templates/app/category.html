@@ -32,12 +32,18 @@
                     >
                         Thêm vào giỏ hàng
                     </button>
-                    <a class="btn btn-outline-success" href="#">Xem</a>
+                    <a class="btn btn-outline-success" href="{% url "detail" %}?id={{product.id}}">Xem</a>
                 </div>
             </div>
             {% endfor %}
         </div>
-
+    <br>
+        <br>
+          <br>
+        <br>
+ 
         {% endblock register %}
+    
+
     </body>
 </html>

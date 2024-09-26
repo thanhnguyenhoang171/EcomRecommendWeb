@@ -125,34 +125,75 @@
 </div>
 {%endblock banner-slider%} 
 
-{%block main-content%}
-
-<!--Row product-->
- <div class="row" style = "width:100%">
-    {%for product in products%}
+{% block main-content %}
+<div class="row" style="width:100%">
+    {% for product in page_obj %}
         <div class="col-lg-3">
-            <img style = "height:280px; width:100%"  class="thumbnail" src="{{product.ImageURL}}" />
-            <div  class="box-element product">
-                <div style="height:50px;">
-                <h6><strong>{{product.name}}</strong></h6>
+            <img style="height:320px; width:100%" class="thumbnail" src="{{ product.ImageURL }}" />
+            <div class="box-element product">
+                <div style="height:80px;">
+                    <h6><strong>{{ product.name }}</strong></h6>
                 </div>
                 <hr>
                 <h4 style="display: inline-block; float: center">
-                    <strong>{{product.price | floatformat:0 | intcomma}} VNĐ</strong>
+                    <strong>{{ product.price | floatformat:0 | intcomma }} VNĐ</strong>
                 </h4>
                 <br>
-                <button data-product={{product.id}} data-action = "add"class="btn btn-outline-secondary add-btn update-cart">
+                <button data-product={{ product.id }} data-action="add" class="btn btn-outline-danger add-btn update-cart">
                     Thêm vào giỏ hàng
                 </button>
-                <a class="btn btn-outline-success" href="#">Xem</a>
-                
+                <a class="btn btn-outline-primary" href="{% url 'detail' %}?id={{ product.id }}">Xem</a>
             </div>
         </div>
     {% endfor %}
 </div>
-    <br>
-     <br>
-      <br>
-       <br>
-    {%endblock main-content%}
+
+<!-- Pagination Controls -->
+<div class="pagination justify-content-center mt-4">
+    <nav aria-label="Page navigation">
+        <ul class="pagination">
+            {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page=1" aria-label="First">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                </li>
+            {% endif %}
+
+            <!-- Add Page Numbers -->
+            {% for num in page_obj.paginator.page_range %}
+                {% if num == page_obj.number %}
+                    <li class="page-item active">
+                        <span class="page-link">{{ num }}</span>
+                    </li>
+                {% else %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+
+            {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}" aria-label="Last">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+</div>
+
+
+<br>
+<br>
+<br>
+<br>
+{% endblock main-content %}
 </div>
