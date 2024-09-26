@@ -21,12 +21,14 @@
                         </h5>
                     </th>
                     <th>
+            
                         <a
                             style="float: right; margin: 5px"
-                            class="btn btn-success"
+                            class="btn btn-danger"
                             href="{% url 'checkout' %}"
                             >Thanh toán</a
                         >
+                        
                     </th>
                 </tr>
             </table>
@@ -84,5 +86,15 @@
             {% endfor %}
         </div>
     </div>
+    <!-- Hiển thị thông báo -->
+            {% if messages %}
+                <div class="alert alert-info">
+                    {% for message in messages %}
+					 {% if message.tags == 'success' or message.tags == 'error' %}
+                        <p>{{ message }}</p>
+						 {% endif %}
+                    {% endfor %}
+                </div>
+            {% endif %}
 </div>
 {% endblock cart-content %}

@@ -1,0 +1,26 @@
+.rating {
+    direction: rtl; /* Để sắp xếp từ trái sang phải */
+    display: flex;
+}
+
+.rating input {
+    display: none; /* Ẩn các radio button */
+}
+
+.rating label {
+    font-size: 2em; /* Kích thước của sao */
+    color: #ccc; /* Màu sắc cho sao chưa được chọn */
+    cursor: pointer; /* Hiển thị con trỏ khi di chuột */
+}
+
+.rating input:checked ~ label {
+    color: gold; /* Màu sắc cho sao đã được chọn */
+}
+
+.rating label:hover,
+.rating label:hover ~ label {
+    color: gold; /* Màu sắc cho sao khi hover */
+}
+
+
+

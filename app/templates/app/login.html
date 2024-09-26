@@ -109,15 +109,15 @@
                                                     >Đăng ký</a
                                                 >
                                             </p>
-                                            {% for message in messages %}
-                                            <p
-                                                id="message"
-                                                class="text-center h6 fw-bold mb-5 mx-1 mx-md-4 mt-2"
-                                                style="color: red"
-                                            >
-                                                {{message}}
-                                            </p>
-                                            {% endfor %}
+                       {% if messages %}
+    {% for message in messages %}
+        {% if message.tags == 'error' %}  <!-- Chỉ hiển thị thông báo lỗi liên quan -->
+            <p class="text-center h6 fw-bold mb-5 mx-1 mx-md-4 mt-2" style="color: red;">
+                {{ message }}
+            </p>
+        {% endif %}
+    {% endfor %}
+{% endif %}
                                         </form>
                                     </div>
                                     <div

@@ -1,0 +1,55 @@
+{% extends "app/base.html" %}
+{% load static %}
+
+{% block about-us %}
+<!-- About 4 - Bootstrap Brain Component -->
+<section class="py-3 py-md-5 py-xl-8">
+  <div class="container">
+    <div class="row">
+      <div class="col-12 col-md-10 col-lg-8">
+        <h3 class="fs-5 mb-2 text-secondary text-uppercase">Giới thiệu</h3>
+        <h2 class="display-5 mb-4">Về bản chất, chúng tôi áp dụng đổi mới và AI để định hình lại bối cảnh thương mại điện tử và thúc đẩy việc học tập liên tục.</h2>
+      <button type="button" class="btn btn-lg btn-primary mb-3 mb-md-4 mb-xl-5">
+  <a href="{% url 'contact' %}" style="color: white; text-decoration: none;">Liên hệ ngay</a>
+</button>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="row gy-3 gy-md-4 gy-lg-0">
+      <div class="col-12 col-lg-6">
+        <div class="card bg-light p-3 m-0">
+          <div class="row gy-3 gy-md-0 align-items-md-center">
+            <div class="col-md-5">
+              <img src="{% static 'app/images/Ecommerce-Website.webp'%}" class="img-fluid rounded-start" alt="Why Choose Us?">
+            </div>
+            <div class="col-md-7">
+              <div class="card-body p-0">
+                <h2 class="card-title h4 mb-3">Tại sao nên chọn chúng tôi?</h2>
+                <p class="card-text lead">Với kinh nghiệm sâu rộng và hiểu biết sâu sắc về bối cảnh thương mại điện tử, chúng tôi có thành tích thành công đã được chứng minh và không ngừng nỗ lực đổi mới và đáp ứng nhu cầu ngày càng thay đổi của khách hàng.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 col-lg-6">
+        <div class="card bg-light p-3 m-0">
+          <div class="row gy-3 gy-md-0 align-items-md-center">
+            <div class="col-md-5">
+              <img src="{% static 'app/images/imgabout.jfif'%}" class="img-fluid rounded-start" alt="Visionary Team">
+            </div>
+            <div class="col-md-7">
+              <div class="card-body p-0">
+                <h2 class="card-title h4 mb-3">Đội ngũ có tầm nhìn xa</h2>
+                <p class="card-text lead">Đội ngũ kỹ sư, nhà phát triển và nhà tư duy sáng tạo của chúng tôi luôn tận tâm biến những thách thức phức tạp thành các giải pháp thương mại điện tử tiên tiến.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock about-us %}
