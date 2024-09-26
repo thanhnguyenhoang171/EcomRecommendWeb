@@ -3,6 +3,7 @@ asgiref==3.8.1
 astroid==3.2.4
 asttokens==2.4.1
 autopep8==2.3.1
+beautifulsoup4==4.12.3
 blinker==1.8.2
 certifi==2024.7.4
 chardet==4.0.0
@@ -56,7 +57,7 @@ mysql-connector-python==9.0.0
 mysqlclient==2.2.4
 nest-asyncio==1.6.0
 networkx==3.3
-numpy==2.1.0
+numpy==1.26.4
 opencv-contrib-python==4.10.0.84
 opencv-python==4.10.0.84
 opencv-python-headless==4.10.0.84
@@ -69,9 +70,11 @@ platformdirs==4.2.2
 progressbar==2.5
 prompt_toolkit==3.0.47
 protobuf==5.27.3
+psutil==6.0.0
 psycopg2==2.9.9
 pure-eval==0.2.2
 pycodestyle==2.12.1
+Pygments==2.18.0
 pylint==3.2.6
 pyparsing==3.1.4
 python-dateutil==2.9.0.post0
@@ -88,6 +91,7 @@ scikit-learn==1.5.1
 scipy==1.14.1
 setuptools==73.0.1
 six==1.16.0
+soupsieve==2.6
 sqlparse==0.5.1
 stack-data==0.6.3
 threadpoolctl==3.5.0
@@ -95,6 +99,7 @@ tifffile==2024.8.10
 toml==0.10.2
 tomlkit==0.13.2
 tornado==6.4.1
+tqdm==4.66.5
 traitlets==5.14.3
 typing_extensions==4.12.2
 tzdata==2024.1
