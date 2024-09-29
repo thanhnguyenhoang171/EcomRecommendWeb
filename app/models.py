@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django.utils import timezone  # Thêm dòng này để nhập timezone
 
+
 # Custom User Registration Form
 class CreateUserForm(UserCreationForm):
     class Meta:
@@ -30,7 +31,7 @@ class Category(models.Model):
     slug = models.SlugField(max_length=200, unique=True)
 
     def __str__(self):
-        return self.name
+        return f"Category :{self.sub_category.name if self.sub_category else 'None'} - Subcategory: {self.name}"
 
 
 class Product(models.Model):
@@ -47,7 +48,7 @@ class Product(models.Model):
     imgdes5 = models.ImageField(null=True, blank=True)
 
     def __str__(self):
-        return self.name
+        return f"Product : {self.name} - Price: {self.price}"
 
     # Helper methods to handle missing images
     @property
@@ -107,7 +108,8 @@ class ShippingAddress(models.Model):
     phonenum = models.CharField(max_length=15, blank=True, null=True)
 
     def __str__(self):
-        return f"{self.customer.username} - {self.address}"
+        return f"Shipping Address: {self.address}, {self.city}, {self.state} - Customer : {self.customer.username}"
+        # return f"{self.customer.username} - {self.address}"
 
 
 class Order(models.Model):
@@ -130,8 +132,10 @@ class Order(models.Model):
     shipping_address = models.ForeignKey(
         ShippingAddress, on_delete=models.SET_NULL, blank=True, null=True
     )
+
     def __str__(self):
-        return str(self.id)
+        return f"Order_ID: {self.id} - Customer: {self.customer.username} - Complete: {self.complete} - Status : {self.status} - Transaction_ID: {self.transaction_id}"
+        # return str(self.id)
 
     @property
     def get_cart_items(self):
@@ -151,6 +155,9 @@ class OrderItem(models.Model):
     )  # Sử dụng CASCADE để giữ dữ liệu
     quantity = models.IntegerField(default=0, null=True, blank=True)
     date_added = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Order_ID {self.order.id} - Order_Items: {self.product.name} (x{self.quantity}) - Quantity: {self.quantity} - Order_Date: {self.date_added}"
 
     @property
     def get_total(self):
@@ -181,7 +188,7 @@ class Rating(models.Model):
         else:
             comment_preview = "No Comment"
 
-        return f"{customer_username} - {product_name} - {self.rating} - Comment: {comment_preview}"
+        return f"Customer: {customer_username} - Product: {product_name} - Rating: {self.rating} - Comment: {comment_preview}"
 
 
 class Contact(models.Model):
@@ -196,17 +203,17 @@ class Contact(models.Model):
     created_at = models.DateTimeField(default=timezone.now)  # Lưu thời gian gửi liên hệ
 
     def __str__(self):
-        return f"{self.full_name} - {self.subject}"
+        return f"Customer: {self.full_name} - Subject: {self.subject} - Email: {self.email} - Message: {self.message} - Phone: {self.phone}"
 
     class Meta:
         ordering = ["-created_at"]  # Sắp xếp theo thời gian gần nhất
 
-STATUS_CHOICES = (
-    ("Accepted", "Accepted"),
-    ("Packed", "Packed"),
-    ("On The Way", "On The Way"),
-    ("Delivered", "Delivered"),
-    ("Cancel", "Cancel"),
-    ("Pending", "Pending"),
-)
 
+# STATUS_CHOICES = (
+#     ("Accepted", "Accepted"),
+#     ("Packed", "Packed"),
+#     ("On The Way", "On The Way"),
+#     ("Delivered", "Delivered"),
+#     ("Cancel", "Cancel"),
+#     ("Pending", "Pending"),
+# )

@@ -1,6 +1,26 @@
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from . import views
+from rest_framework.routers import DefaultRouter
+from .views import (
+    ProductViewSet,
+    OrderViewSet,
+    CategoryViewSet,
+    OrderItemViewSet,
+    ContactViewSet,
+    RatingViewSet,
+    ShippingAddressViewSet,
+)
+
+
+router = DefaultRouter()
+router.register(r"products", ProductViewSet, basename="product")
+router.register(r"orders", OrderViewSet, basename="order")
+router.register(r"categories", CategoryViewSet, basename="category")
+router.register(r"orderitems", OrderItemViewSet, basename="orderitem")
+router.register(r"contacts", ContactViewSet, basename="contact")
+router.register(r"ratings", RatingViewSet, basename="rating")
+router.register(r"shippingaddress", ShippingAddressViewSet, basename="shippingaddress")
 
 urlpatterns = [
     path("", views.home, name="home"),
@@ -18,4 +38,5 @@ urlpatterns = [
     path("info/", views.info, name="info"),
     path("process_payment/", views.process_payment, name="process_payment"),
     path("evaluate/", views.evaluate, name="evaluate"),
+    path("api/", include(router.urls)),
 ]
