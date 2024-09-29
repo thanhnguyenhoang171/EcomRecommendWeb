@@ -6,11 +6,30 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.core.paginator import Paginator
-from .models import User, Product, Rating
+from .models import (
+    Category,
+    Product,
+    ShippingAddress,
+    Order,
+    OrderItem,
+    Rating,
+    Contact,
+)
 from .recommendation import CFRecommender
 from django.db.models import Avg
 from .evaluate import Evaluator
-
+from rest_framework import viewsets
+from .serializers import (
+    CategorySerializer,
+    ProductSerializer,
+    ShippingAddressSerializer,
+    OrderSerializer,
+    OrderItemSerializer,
+    RatingSerializer,
+    ContactSerializer,
+)
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 
 # Create your views here.
 def home(request):
@@ -490,3 +509,39 @@ def evaluate(request):
 
     # Xử lý và trả về phản hồi bình thường
     return HttpResponse(f"SE: {SE}, RMSE: {RMSE}")
+
+
+# Tạo API
+class ProductViewSet(viewsets.ModelViewSet):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+
+
+class OrderViewSet(viewsets.ModelViewSet):
+    queryset = Order.objects.all()
+    serializer_class = OrderSerializer
+
+
+class CategoryViewSet(viewsets.ModelViewSet):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+
+
+class OrderItemViewSet(viewsets.ModelViewSet):
+    queryset = OrderItem.objects.all()
+    serializer_class = OrderItemSerializer
+
+
+class ContactViewSet(viewsets.ModelViewSet):
+    queryset = Contact.objects.all()
+    serializer_class = ContactSerializer
+
+
+class RatingViewSet(viewsets.ModelViewSet):
+    queryset = Rating.objects.all()
+    serializer_class = RatingSerializer
+
+
+class ShippingAddressViewSet(viewsets.ModelViewSet):
+    queryset = ShippingAddress.objects.all()
+    serializer_class = ShippingAddressSerializer

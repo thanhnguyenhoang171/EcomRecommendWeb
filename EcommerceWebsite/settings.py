@@ -40,8 +40,13 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "app",
     "django.contrib.humanize",
+    "rest_framework",
+    "django_extensions",
 ]
-
+REST_FRAMEWORK = {
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "PAGE_SIZE": 10,  # Số lượng sản phẩm trên mỗi trang
+}
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -129,7 +134,7 @@ STATIC_URL = '/static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),
+    os.path.join(BASE_DIR, 'app/static'),
 ]
 MEDIA_URL = "/images/"
-MEDIA_ROOT = os.path.join(BASE_DIR, 'app/static/images')
+MEDIA_ROOT = os.path.join(BASE_DIR, '/app/static/images')
