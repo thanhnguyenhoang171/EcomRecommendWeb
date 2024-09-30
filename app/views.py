@@ -48,7 +48,7 @@ def home(request):
         items = []
         cartItems = 0
 
-    products = Product.objects.all()
+    products = Product.objects.all().order_by("?")
     categories = Category.objects.filter(is_sub=False)
 
     # Pagination
@@ -306,6 +306,24 @@ def detail(request):
         messages.error(request, "Sản phẩm không tồn tại.")  # Thêm thông báo lỗi
         return render(request, "app/detail.html", {})
 
+    if request.user.is_authenticated:
+        customer = request.user
+        order = Order.objects.filter(
+            customer=customer, complete=False
+        ).first()  # Lấy order nếu đã tồn tại
+        if order:
+            items = order.orderitem_set.all()
+            cartItems = order.get_cart_items
+        else:
+            items = []
+            cartItems = 0
+    else:
+        items = []
+        cartItems = 0
+
+   
+    categories = Category.objects.filter(is_sub=False)
+    
     product = products.first()
     ratings = Rating.objects.filter(product=product).order_by("-created_at")
     star_range = range(1, 6)
@@ -320,6 +338,7 @@ def detail(request):
         "avg_rating": avg_rating,
         "total_reviews": total_reviews,
         "star_range": star_range,
+        "categories": categories,
     }
 
     return render(request, "app/detail.html", context)
