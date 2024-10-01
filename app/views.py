@@ -245,9 +245,9 @@ def category(request):
     categories = Category.objects.filter(is_sub=False)
     active_category = request.GET.get("category", "")
     products = (
-        Product.objects.filter(category__slug=active_category)
+        Product.objects.filter(category__slug=active_category).order_by("?")
         if active_category
-        else Product.objects.all()
+        else Product.objects.all().order_by("?")
     )
 
     subcategories = Category.objects.filter(is_sub=True)
