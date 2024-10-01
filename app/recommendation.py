@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 from sklearn.metrics.pairwise import cosine_similarity
 from scipy import sparse
-from .models import Rating, Product, User
+from .models import Rating, Product
 
 
 class CFRecommender:
@@ -14,6 +14,7 @@ class CFRecommender:
         self.mean = None
         self.Ybar = None
         self.S = None
+        self.product_to_index = {}
 
     def fetch_data(self):
         """
@@ -33,9 +34,10 @@ class CFRecommender:
             raise ValueError("Không có dữ liệu đánh giá để chuẩn hóa.")
 
         # Ép kiểu customer_id và product_id thành integer
-        Y_data = Y_data.astype(int)  # Chuyển đổi tất cả các giá trị thành số nguyên
+        Y_data = Y_data.astype(int)
 
         users = Y_data[:, 0]  # Cột user_id
+        products = Y_data[:, 1]  # Cột product_id
         self.mean = np.zeros(np.max(users) + 1)  # Mảng trung bình cho mỗi user
         self.Ybar_data = Y_data.copy()  # Tạo bản sao dữ liệu đánh giá
 
@@ -46,10 +48,17 @@ class CFRecommender:
             self.mean[n] = m  # Gán giá trị trung bình
             self.Ybar_data[ids, 2] = ratings - self.mean[n]  # Chuẩn hóa các đánh giá
 
-        # Tạo ma trận sparse từ dữ liệu đánh giá đã chuẩn hóa
-        self.Ybar = sparse.coo_matrix(
-            (self.Ybar_data[:, 2], (self.Ybar_data[:, 1], self.Ybar_data[:, 0]))
+        # Tạo mapping cho product IDs
+        unique_products = np.unique(products)
+        self.product_to_index = {
+            product_id: index for index, product_id in enumerate(unique_products)
+        }
+        product_indices = np.array(
+            [self.product_to_index[prod_id] for prod_id in products]
         )
+
+        # Tạo ma trận sparse từ dữ liệu đánh giá đã chuẩn hóa
+        self.Ybar = sparse.coo_matrix((self.Ybar_data[:, 2], (product_indices, users)))
         self.Ybar = self.Ybar.tocsr()  # Chuyển đổi sang định dạng CSR
 
     def similarity(self):
@@ -65,8 +74,8 @@ class CFRecommender:
         Khởi chạy quá trình huấn luyện mô hình
         """
         Y_data = self.fetch_data()  # Lấy dữ liệu đánh giá từ cơ sở dữ liệu
-        if Y_data is None:
-            raise ValueError("Không có dữ liệu đánh giá.")
+        if Y_data is None or len(Y_data) == 0:
+            raise ValueError("Không có dữ liệu đánh giá để huấn luyện mô hình.")
         self.normalize_Y(Y_data)  # Chuẩn hóa dữ liệu đánh giá
         self.similarity()  # Tính toán ma trận tương đồng
 
@@ -77,14 +86,17 @@ class CFRecommender:
         user_id = int(user_id)  # Chuyển đổi thành số nguyên
         product_id = int(product_id)  # Chuyển đổi thành số nguyên
 
-        # Giả sử self.Ybar là ma trận thưa đã được khởi tạo
+        # Kiểm tra chỉ số
+        if user_id >= self.Ybar.shape[1]:
+            raise IndexError("Chỉ số người dùng vượt quá giới hạn.")
+        if product_id not in self.product_to_index:
+            raise IndexError("Chỉ số sản phẩm vượt quá giới hạn.")
+
+        product_index = self.product_to_index[product_id]
         user_ratings = self.Ybar[:, user_id].toarray().flatten()
         sim_users = self.S[user_id]  # Lấy độ tương đồng của người dùng
+        ratings = self.Ybar[product_index, :].toarray().flatten()
 
-        # Lấy đánh giá cho sản phẩm i
-        ratings = self.Ybar[product_id, :].toarray().flatten()
-
-        # Đảm bảo không chia cho 0 nếu không có user tương đồng
         if np.abs(sim_users).sum() > 0:
             pred = sim_users.dot(ratings) / np.abs(sim_users).sum()
         else:
@@ -94,37 +106,42 @@ class CFRecommender:
 
     def recommend(self, user_id):
         """
-        Gợi ý sản phẩm cho người dùng
+        Gợi ý sản phẩm cho người dùng mà người dùng đó chưa đánh giá.
         """
         if self.S is None:
-            raise ValueError("Mô hình chưa được huấn luyện")
+            raise ValueError("Mô hình chưa được huấn luyện.")
 
-        # Lấy đánh giá của user_id trong ma trận đánh giá
+        user_id = int(user_id)  # Chuyển đổi thành số nguyên
+
+        # Kiểm tra chỉ số người dùng
+        if user_id >= self.Ybar.shape[1]:
+            raise IndexError("Chỉ số người dùng vượt quá giới hạn.")
+
         user_ratings = self.Ybar[:, user_id].toarray().flatten()
-        rated_items = np.where(user_ratings > 0)[0]  # Sản phẩm đã đánh giá
+        rated_items = set(np.where(user_ratings > 0)[0])  # Sản phẩm đã đánh giá
+
+        all_product_ids = set(Product.objects.values_list("id", flat=True))
         recommendations = []
 
-        # Duyệt qua các sản phẩm chưa được đánh giá
-        for i in range(self.Ybar.shape[0]):
-            if i not in rated_items:
-                # Lấy độ tương đồng giữa user và những user khác
-                sim_users = self.S[user_id]
-                ratings = self.Ybar[i, :].toarray().flatten()  # Đánh giá cho sản phẩm i
+        for product_id in all_product_ids:  # Duyệt qua tất cả các sản phẩm
+            if product_id not in rated_items:  # Chỉ gợi ý sản phẩm chưa được đánh giá
+                if (
+                    product_id in self.product_to_index
+                ):  # Kiểm tra sản phẩm có trong mapping
+                    product_index = self.product_to_index[product_id]
+                    sim_users = self.S[user_id]
+                    ratings = self.Ybar[product_index, :].toarray().flatten()
 
-                # Đảm bảo không chia cho 0 nếu không có user tương đồng
-                if np.abs(sim_users).sum() > 0:
-                    pred = sim_users.dot(ratings) / np.abs(sim_users).sum()
-                else:
-                    pred = 0  # Đặt giá trị dự đoán là 0 nếu không có user tương đồng
+                    if np.abs(sim_users).sum() > 0:
+                        pred = sim_users.dot(ratings) / np.abs(sim_users).sum()
+                    else:
+                        pred = 0
 
-                recommendations.append((i, pred))
+                    recommendations.append((product_id, pred))
+
         # Sắp xếp theo thứ tự dự đoán rating
         recommendations.sort(key=lambda x: x[1], reverse=True)
-
-        # Lấy danh sách product_id
         recommended_ids = [r[0] for r in recommendations[: self.k]]
 
-        # Truy vấn cơ sở dữ liệu
         recommended_products = Product.objects.filter(id__in=recommended_ids)
-
         return recommended_products if recommended_products.exists() else []

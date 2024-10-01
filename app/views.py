@@ -31,6 +31,7 @@ from .serializers import (
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
+
 # Create your views here.
 def home(request):
     if request.user.is_authenticated:
@@ -231,13 +232,15 @@ def search(request):
 def category(request):
     if request.user.is_authenticated:
         customer = request.user
-        order, created = Order.objects.get_or_create(customer=customer, complete=False)
-        items = order.orderitem_set.all()
-        cartItems = order.get_cart_items
+        order = Order.objects.filter(
+            customer=customer, complete=False
+        ).first()  # Change here
+        items = order.orderitem_set.all() if order else []
+        cartItems = order.get_cart_items if order else 0  # Update to handle None
+
     else:
         items = []
-        order = {"get_cart_items": 0, "get_cart_total": 0}
-        cartItems = order["get_cart_items"]
+        cartItems = 0  # Directly set to 0 since there's no order
 
     categories = Category.objects.filter(is_sub=False)
     active_category = request.GET.get("category", "")
@@ -262,17 +265,31 @@ def category(request):
 def detail(request):
     if request.user.is_authenticated:
         customer = request.user
-        order, created = Order.objects.get_or_create(customer=customer, complete=False)
-        cartItems = order.get_cart_items
+        order = Order.objects.filter(customer=customer, complete=False).first()
+        cartItems = order.get_cart_items if order else 0
 
         recommender = CFRecommender(k=5)
-        recommender.fit()
 
         try:
+            recommender.fit()  # Huấn luyện mô hình
             recommended_products = recommender.recommend(customer.id)
-        except Exception as e:
-            recommended_products = []
-            print(f"Error fetching recommendations: {e}")
+        except ValueError as e:
+            if str(e) == "Không có dữ liệu đánh giá để huấn luyện mô hình.":
+                recommended_products = []
+                print("Không có dữ liệu đánh giá để tạo gợi ý sản phẩm.")
+            else:
+                recommended_products = []
+                print(f"Error fetching recommendations: {e}")
+
+        # Lấy danh sách sản phẩm mà người dùng đã đánh giá
+        existing_product_ids = Rating.objects.filter(customer=customer).values_list(
+            "product_id", flat=True
+        )
+
+        # Lọc ra sản phẩm đã đánh giá
+        recommended_products = [
+            p for p in recommended_products if p.id not in existing_product_ids
+        ]
 
         if request.method == "POST":
             comment_content = request.POST.get("comment")
@@ -303,14 +320,12 @@ def detail(request):
     products = Product.objects.filter(id=id)
 
     if not products.exists():
-        messages.error(request, "Sản phẩm không tồn tại.")  # Thêm thông báo lỗi
+        messages.error(request, "Sản phẩm không tồn tại.")
         return render(request, "app/detail.html", {})
 
     if request.user.is_authenticated:
         customer = request.user
-        order = Order.objects.filter(
-            customer=customer, complete=False
-        ).first()  # Lấy order nếu đã tồn tại
+        order = Order.objects.filter(customer=customer, complete=False).first()
         if order:
             items = order.orderitem_set.all()
             cartItems = order.get_cart_items
@@ -321,9 +336,7 @@ def detail(request):
         items = []
         cartItems = 0
 
-   
     categories = Category.objects.filter(is_sub=False)
-    
     product = products.first()
     ratings = Rating.objects.filter(product=product).order_by("-created_at")
     star_range = range(1, 6)
@@ -333,14 +346,13 @@ def detail(request):
     context = {
         "products": products,
         "cartItems": cartItems,
-        "recommended_products": recommended_products,
-        "ratings": ratings,
-        "avg_rating": avg_rating,
-        "total_reviews": total_reviews,
-        "star_range": star_range,
         "categories": categories,
+        "ratings": ratings,
+        "star_range": star_range,
+        "total_reviews": total_reviews,
+        "avg_rating": avg_rating,
+        "recommended_products": recommended_products,
     }
-
     return render(request, "app/detail.html", context)
 
 

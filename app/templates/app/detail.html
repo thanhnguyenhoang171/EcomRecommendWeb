@@ -7,10 +7,10 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title></title>
-    <meta name="description" content="" />
+    <title>{{ product.name }}</title>
+    <meta name="description" content="{{ product.description | truncatewords:30 }}" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="stylesheet" href="" />
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}" /> <!-- Thêm đường dẫn tới file CSS nếu cần -->
 </head>
 <body>
     {% block rating %}
@@ -43,51 +43,26 @@
                     <main class="col-lg-6">
                         <div class="ps-lg-3">
                             <h4 class="title text-dark">{{ product.name }}</h4>
-                              <div class="d-flex flex-row my-3">
-
-                                 <div class="mb-3">
-                                <span class="h5">{{ product.price | floatformat:0 | intcomma }} VNĐ  &nbsp</span>
-                            {% comment %} </div>
-                                <!-- Star Rating -->
+                            <div class="d-flex flex-row my-3">
+                                <div class="mb-3">
+                                    <span class="h5">{{ product.price | floatformat:0 | intcomma }} VNĐ &nbsp</span>
+                                </div>
                                 <div class="text-warning mb-1 me-2">
-                                    {% for i in "12345" %}
-                                        {% if i <= avg_rating %}
-                                            <i class="fa fa-star"></i>
-                                        {% else %}
-                                            <i class="fa fa-star-o"></i>
-                                        {% endif %}
-                                    {% endfor %}
-                                    <span class="ms-1">{{ avg_rating|floatformat:1 }}</span>
+                                    <div class="star-rating">
+                                        {% for i in star_range %}
+                                            {% if i <= avg_rating %}
+                                                <i class="fa fa-star"></i>
+                                            {% else %}
+                                                <i class="fa fa-star-o"></i>
+                                            {% endif %}
+                                        {% endfor %}
+                                        <span class="ms-1">{{ avg_rating|floatformat:1 }}</span>
+                                    </div>
+                                    <div class="total-ratings ms-2 text-muted">
+                                        ({{ total_reviews }} đánh giá)
+                                    </div>
                                 </div>
                             </div>
-                            {% endcomment %}
-<div class="d-flex align-items-center">
-    <!-- Star Rating -->
-    {% comment %} <div class="text-warning mb-1 me-2 star-rating">
-        {% for i in "12345" %}
-            {% if i <= avg_rating %}
-                <i class="fa fa-star"></i>
-            {% else %}
-                <i class="fa fa-star-o"></i>
-            {% endif %}
-        {% endfor %}
-        <span class="ms-1">{{ avg_rating|floatformat:1 }}</span>
-    </div> {% endcomment %}
-    <div class="text-warning mb-1 me-2 star-rating">
-    {% for i in star_range %}
-        {% if i <= avg_rating %}
-            <i class="fa fa-star"></i>
-        {% else %}
-            <i class="fa fa-star-o"></i>
-        {% endif %}
-    {% endfor %}
-    <span class="ms-1">{{ avg_rating|floatformat:1 }}</span>
-</div>
-    <!-- Hiển thị tổng số đánh giá -->
-    <div class="total-ratings ms-2 text-muted">
-        ({{ total_reviews }} đánh giá)
-    </div>
-</div>
                             <p>{{ product.description | safe }}</p>
 
                             <hr />
@@ -128,22 +103,21 @@
                         <div class="px-0 border rounded-2 shadow-0">
                             <div class="card">
                                 <div class="card-body">
-                                   
-                                     <h6 class="card-title card-title rounded-pill text-white bg-primary border border-primary py-2 px-3 text-center">Sản phẩm có thể bạn sẽ quan tâm</h6> 
+                                    <h6 class="card-title card-title rounded-pill text-white bg-primary border border-primary py-2 px-3 text-center">Sản phẩm có thể bạn sẽ quan tâm</h6> 
                                     {% if recommended_products %}
-                                        {% for product in recommended_products %}
+                                        {% for rec_product in recommended_products %}
                                         <div class="d-flex mb-3">
-                                            <a href="{% url 'detail' %}?id={{ product.id }}" class="me-3">
-                                                <img src="{{ product.ImageURL }}"
+                                            <a href="{% url 'detail' %}?id={{ rec_product.id }}" class="me-3">
+                                                <img src="{{ rec_product.ImageURL }}"
                                                      style="min-width: 96px; height: 96px;"
                                                      class="img-md img-thumbnail" />
                                             </a>
                                             <div class="info">
-                                                <a href="{% url 'detail' %}?id={{ product.id }}" class="nav-link mb-1">
-                                                    {{ product.name }}
+                                                <a href="{% url 'detail' %}?id={{ rec_product.id }}" class="nav-link mb-1">
+                                                    {{ rec_product.name }}
                                                 </a>
                                                 <strong class="text-dark">
-                                                    {{ product.price | floatformat:0 | intcomma }} VNĐ</strong>
+                                                    {{ rec_product.price | floatformat:0 | intcomma }} VNĐ</strong>
                                             </div>
                                         </div>
                                         {% endfor %}
@@ -155,87 +129,61 @@
                         </div>
                         <br>
                         <!-- Form for adding a rating and comment -->
-<form method="POST">
-    {% csrf_token %}
-    <h6>Xin mời bạn để lại đánh giá</h6>
-    <textarea name="comment" style="width:100%;" rows="4" placeholder="Thêm ý kiến của bạn tại đây..." required></textarea>
-    {% comment %} đang sửa {% endcomment %}
-    <div>
-    <label for="rating">Đánh giá:</label>
-    <div class="rating" style="">
-        <input type="radio" id="star5" name="rating" value="5" required>
-        <label for="star5" class="star">&#9733;</label>
-        
-        <input type="radio" id="star4" name="rating" value="4" required>
-        <label for="star4" class="star">&#9733;</label>
-        
-        <input type="radio" id="star3" name="rating" value="3" required>
-        <label for="star3" class="star">&#9733;</label>
-        
-        <input type="radio" id="star2" name="rating" value="2" required>
-        <label for="star2" class="star">&#9733;</label>
-        
-        <input type="radio" id="star1" name="rating" value="1" required>
-        <label for="star1" class="star">&#9733;</label>
-    </div>
-</div>
+                        <form method="POST">
+                            {% csrf_token %}
+                            <h6>Xin mời bạn để lại đánh giá</h6>
+                            <textarea name="comment" style="width:100%;" rows="4" placeholder="Thêm ý kiến của bạn tại đây..." required></textarea>
+                            <div>
+                                <label for="rating">Đánh giá:</label>
+                                <div class="rating">
+                                    <input type="radio" id="star5" name="rating" value="5" required>
+                                    <label for="star5" class="star">&#9733;</label>
 
+                                    <input type="radio" id="star4" name="rating" value="4" required>
+                                    <label for="star4" class="star">&#9733;</label>
 
-    <button type="submit" class="btn btn-primary">Gửi đánh giá</button>
-    
-</form>
-<br>
-{% if messages %}
-    {% for message in messages %}
-        {% if message.tags == 'success' or message.tags == 'error' %} <!-- Chỉ hiển thị thông báo liên quan -->
-            <p class="text-center h6 fw-bold mb-5 mx-1 mx-md-4 mt-2" style="color: green;">
-                {{ message }}
-            </p>
-        {% endif %}
-    {% endfor %}
-{% endif %}
+                                    <input type="radio" id="star3" name="rating" value="3" required>
+                                    <label for="star3" class="star">&#9733;</label>
 
-{% comment %} <!-- Display ratings with comments -->
-<h3 class="text text-primary">Đánh giá và bình luận:</h3>
-<ul id="rating-list">
-    {% for rating in ratings %}
-        <li>
-            <strong>{{ rating.customer.username }}</strong> <em>Đánh giá {{ rating.rating }} Sao</em> 
-            
-            <br>
-            {{ rating.content }} 
-            <br>
-            <em style="font-size:8px;">{{ rating.created_at|date:"d/m/Y H:i" }}</em>
+                                    <input type="radio" id="star2" name="rating" value="2" required>
+                                    <label for="star2" class="star">&#9733;</label>
 
-        </li>
-    {% empty %}
-        <li>Chưa có đánh giá.</li>
-    {% endfor %}
-</ul> {% endcomment %}
+                                    <input type="radio" id="star1" name="rating" value="1" required>
+                                    <label for="star1" class="star">&#9733;</label>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Gửi đánh giá</button>
+                        </form>
+                        <br>
+                        {% if messages %}
+                            {% for message in messages %}
+                                {% if message.tags == 'success' or message.tags == 'error' %}
+                                    <p class="text-center h6 fw-bold mb-5 mx-1 mx-md-4 mt-2" style="color: green;">
+                                        {{ message }}
+                                    </p>
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
 
-
-<!-- Display ratings with comments -->
-<h3 class="text text-primary">Đánh giá và bình luận:</h3>
-<div id="rating-list" style="max-height: 300px; overflow-y: scroll; border: 1px solid #ccc; padding: 10px;">
-    {% for rating in ratings %}
-        <div style="margin-bottom: 15px;">
-            <strong>{{ rating.customer.username }}</strong> 
-            <em> đã đánh giá {{ rating.rating }}  <i class="fa fa-star" style = "color: rgb(255, 193, 7); font-size:12px;"></i></em> 
-            <br>
-            {{ rating.content }} 
-            <br>
-            <em style="font-size: 8px;">{{ rating.created_at|date:"d/m/Y H:i" }}</em>
-        </div>
-    {% empty %}
-        <p>Chưa có đánh giá.</p>
-    {% endfor %}
-</div>
+                        <!-- Display ratings with comments -->
+                        <h3 class="text text-primary">Đánh giá và bình luận:</h3>
+                        <div id="rating-list" style="max-height: 300px; overflow-y: scroll; border: 1px solid #ccc; padding: 10px;">
+                            {% for rating in ratings %}
+                                <div style="margin-bottom: 15px;">
+                                    <strong>{{ rating.customer.username }}</strong> 
+                                    <em> đã đánh giá {{ rating.rating }} <i class="fa fa-star" style="color: rgb(255, 193, 7); font-size:12px;"></i></em> 
+                                    <br>
+                                    {{ rating.content }} 
+                                    <br>
+                                    <em style="font-size: 8px;">{{ rating.created_at|date:"d/m/Y H:i" }}</em>
+                                </div>
+                            {% empty %}
+                                <p>Chưa có đánh giá.</p>
+                            {% endfor %}
+                        </div>
                     </div>
-                    
                 </div>
-                
             </div>
-            
         </section>
     {% endfor %}
     {% endblock rating %}
