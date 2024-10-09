@@ -391,12 +391,15 @@ def contact(request):
         else:
             # Nếu có trường bắt buộc nào thiếu, thông báo lỗi
             messages.error(request, "Vui lòng điền đầy đủ thông tin bắt buộc!")
-
-    return render(request, "app/contact.html")  # Render lại trang liên hệ
+    categories = Category.objects.filter(is_sub=False)
+    context = {
+        "categories": categories,}
+    return render(request, "app/contact.html", context)  # Render lại trang liên hệ
 
 
 def aboutus(request):
-    context = {}
+    categories = Category.objects.filter(is_sub=False)
+    context = {"categories": categories,}
     return render(request, "app/aboutus.html", context)  # Render lại trang liên hệ
 
 

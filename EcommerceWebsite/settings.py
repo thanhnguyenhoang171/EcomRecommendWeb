@@ -23,10 +23,17 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-p@lf!5)o36dk%kdb@yrulviymh=*9+ep^r7fa0t67u3ioq$!+='
 
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+
+SESSION_COOKIE_SECURE = False  # Để tạm thời trong môi trường phát triển
+CSRF_COOKIE_SECURE = False  # Để tạm thời trong môi trường phát triển
+
+ALLOWED_HOSTS = ["66ab-203-205-29-27.ngrok-free.app", "localhost", "127.0.0.1"]
+
+CSRF_TRUSTED_ORIGINS = ["https://66ab-203-205-29-27.ngrok-free.app"]
 
 
 # Application definition
