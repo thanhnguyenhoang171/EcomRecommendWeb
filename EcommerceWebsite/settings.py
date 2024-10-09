@@ -31,9 +31,9 @@ DEBUG = True
 SESSION_COOKIE_SECURE = False  # Để tạm thời trong môi trường phát triển
 CSRF_COOKIE_SECURE = False  # Để tạm thời trong môi trường phát triển
 
-ALLOWED_HOSTS = ["66ab-203-205-29-27.ngrok-free.app", "localhost", "127.0.0.1"]
+ALLOWED_HOSTS = ["cfd0-203-205-29-27.ngrok-free.app", "localhost", "127.0.0.1"]
 
-CSRF_TRUSTED_ORIGINS = ["https://66ab-203-205-29-27.ngrok-free.app"]
+CSRF_TRUSTED_ORIGINS = ["https://cfd0-203-205-29-27.ngrok-free.app"]
 
 
 # Application definition

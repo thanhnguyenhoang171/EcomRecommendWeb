@@ -28,11 +28,11 @@
                     <button
                         data-product="{{product.id}}"
                         data-action="add"
-                        class="btn btn-outline-secondary add-btn update-cart"
+                        class="btn btn-outline-danger add-btn update-cart"
                     >
                         Thêm vào giỏ hàng
                     </button>
-                    <a class="btn btn-outline-success" href="{% url "detail" %}?id={{product.id}}">Xem</a>
+                    <a class="btn btn-outline-primary" href="{% url "detail" %}?id={{product.id}}">Xem</a>
                 </div>
             </div>
             {% endfor %}

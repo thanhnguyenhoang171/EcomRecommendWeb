@@ -201,8 +201,8 @@ def logoutPage(request):
 
 
 def search(request):
-    searched = request.POST.get("searched", "")
-    keys = Product.objects.filter(name__contains=searched) if searched else []
+    searched = request.POST.get("searched", "").strip()
+    keys = Product.objects.filter(name__icontains=searched) if searched else []
 
     if request.user.is_authenticated:
         customer = request.user
@@ -393,13 +393,16 @@ def contact(request):
             messages.error(request, "Vui lòng điền đầy đủ thông tin bắt buộc!")
     categories = Category.objects.filter(is_sub=False)
     context = {
-        "categories": categories,}
+        "categories": categories,
+    }
     return render(request, "app/contact.html", context)  # Render lại trang liên hệ
 
 
 def aboutus(request):
     categories = Category.objects.filter(is_sub=False)
-    context = {"categories": categories,}
+    context = {
+        "categories": categories,
+    }
     return render(request, "app/aboutus.html", context)  # Render lại trang liên hệ
 
 
